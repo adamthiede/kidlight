@@ -1,0 +1,6 @@
+#at 7, run awake. at 19:00, run asleep.
+50 6 * * *	pkill python3 ; python3 /home/pi/awake.py&
+30 18 * * *	pkill python3 ; python3 /home/pi/asleep.py&
+
+#runs every 5 minutes to make sure something's running
+*/2 * * * *	/home/pi/isthelighton.sh
