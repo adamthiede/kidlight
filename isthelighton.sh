@@ -3,7 +3,7 @@
 turnon(){
 
 	echo "turn the light on"
-	if [[ $(date +%H) -ge 19 && $(date +%H) -le 6 ]];then
+	if [[ $(date +%H) -ge 19 || $(date +%H) -le 6 ]];then
 		echo "it's nighttime between 19:00 and 7:00"
 		python3 /home/pi/asleep.py&
 	elif [[ $(date +%H) -ge 7 && $(date +%H) -le 19 ]];then
