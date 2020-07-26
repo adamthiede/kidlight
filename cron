@@ -1,5 +1,10 @@
-#at 7, run awake. at 19:00, run asleep.
+# at 6:50 you can get up
 50 6 * * *	pkill python3 ; python3 /home/pi/awake.py&
+#after 13:00, nap time
+0 13 * * *	pkill python3 ; python3 /home/pi/asleep.py&
+#at 15:00 you can get up
+0 15 * * *	pkill python3 ; python3 /home/pi/awake.py&
+#after 18:30, we start bedtime
 30 18 * * *	pkill python3 ; python3 /home/pi/asleep.py&
 
 #runs every 5 minutes to make sure something's running
