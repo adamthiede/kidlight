@@ -9,8 +9,8 @@ hours=12
 minutes=(hours*60)
 time=(minutes*60)
 #define gpio
-green=LED(17)
-red=LED(27)
+green=LED(27)
+red=LED(17)
 button=Button(26)
 #default
 red.on()
