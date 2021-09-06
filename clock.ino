@@ -207,6 +207,11 @@ void loop () {
     pixels.setBrightness(10);
     pixels.show();
   }
+  else {
+    pixels.setPixelColor(0, pixels.Color(0, 0, 0));
+    pixels.setBrightness(0);
+    pixels.show();
+  }
 
   if(!digitalRead(BUTTON_A)) increaseTime();
   if(!digitalRead(BUTTON_B)) rotateDisplay();
