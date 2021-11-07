@@ -169,6 +169,8 @@ void rotateDisplay(){
 
 void loop () {
   DateTime now = rtc.now();
+  //DST
+  //rtc.adjust(DateTime(2021, 11, 7, 6, 26, 0));
   //printRtcTime(now);
   int hr = now.hour();
   int mn = now.minute();
@@ -191,6 +193,8 @@ void loop () {
   Serial.print(now.hour(), DEC);
   Serial.print(':');
   Serial.print(now.minute(), DEC);
+  Serial.print(':');
+  Serial.print(now.second(), DEC);
   Serial.println();
 
 /*
