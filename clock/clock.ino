@@ -35,18 +35,18 @@ void setup () {
     abort();
   }
 
-/*
-  if (! rtc.initialized() || rtc.lostPower()) {
-    Serial.println("RTC is NOT initialized, let's set the time!");
-    // When time needs to be set on a new device, or after a power loss, the
-    // following line sets the RTC to the date & time this sketch was compiled
-    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
-    // rtc.adjust(DateTime(2021, 09, 05, 17, 17, 0));
-    // Note: allow 2 seconds after inserting battery or applying external power
-    // without battery before calling adjust(). This gives the PCF8523's
-  }
-*/
+  /*
+    if (! rtc.initialized() || rtc.lostPower()) {
+      Serial.println("RTC is NOT initialized, let's set the time!");
+      // When time needs to be set on a new device, or after a power loss, the
+      // following line sets the RTC to the date & time this sketch was compiled
+      rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+      // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+      // rtc.adjust(DateTime(2021, 09, 05, 17, 17, 0));
+      // Note: allow 2 seconds after inserting battery or applying external power
+      // without battery before calling adjust(). This gives the PCF8523's
+    }
+  */
   rtc.start();
 
   // The PCF8523 can be calibrated for:
@@ -143,14 +143,37 @@ void printRtcTime(DateTime now) {
 }
 
 void increaseTime() {
-  DateTime tm=rtc.now();
-  rtc.adjust(DateTime(tm.year(), tm.month(), tm.day(), tm.hour(), tm.minute()+1, 0));
+  DateTime tm = rtc.now();
+  rtc.adjust(DateTime(tm.year(), tm.month(), tm.day(), tm.hour(), tm.minute() + 5, 0));
 }
 void decreaseTime() {
-  DateTime tm=rtc.now();
-  rtc.adjust(DateTime(tm.year(), tm.month(), tm.day(), tm.hour(), tm.minute()-1, 0));
+  DateTime tm = rtc.now();
+  rtc.adjust(DateTime(tm.year(), tm.month(), tm.day(), tm.hour(), tm.minute() - 5, 0));
 }
-void rotateDisplay(){
+void displaySetup() {
+  DateTime now = rtc.now();
+  //DST
+  //rtc.adjust(DateTime(2022, 04, 02, 20, 41, 0));
+  //printRtcTime(now);
+  int hr = now.hour();
+  int mn = now.minute();
+  String shr = String(hr);
+  String smn = String(mn);
+  if (mn < 10) {
+    smn = "0" + smn;
+  }
+  if (hr < 10) {
+    shr = " " + shr;
+  }
+  String tstr = shr + ":" + smn;
+  display.setTextSize(4);
+  display.setTextColor(SH110X_WHITE);
+  display.setCursor(5, 16);
+  display.clearDisplay();
+}
+void rotateDisplay(String timestr) {
+  display.println(timestr);
+  display.display();
   switch (display.getRotation()) {
     case 0:
       display.setRotation(3);
@@ -170,7 +193,7 @@ void rotateDisplay(){
 void loop () {
   DateTime now = rtc.now();
   //DST
-  //rtc.adjust(DateTime(2021, 11, 7, 6, 26, 0));
+  //rtc.adjust(DateTime(2022, 04, 02, 20, 41, 0));
   //printRtcTime(now);
   int hr = now.hour();
   int mn = now.minute();
@@ -183,29 +206,31 @@ void loop () {
     shr = " " + shr;
   }
   String tstr = shr + ":" + smn;
+  /*
   display.setTextSize(4);
   display.setTextColor(SH110X_WHITE);
   display.setCursor(5, 16);
   display.clearDisplay();
-  display.println(tstr);
-  display.display();
+  */
+  displaySetup();
+  // do not display the display yet
   Serial.print("current time is: ");
   Serial.print(now.hour(), DEC);
   Serial.print(':');
   Serial.print(now.minute(), DEC);
   Serial.print(':');
   Serial.print(now.second(), DEC);
-  Serial.println();
 
-/*
-  if ( (hr==6 and mn>=30) or (hr>=12 and (hr<=14 and mn<=29))) {
-    //Serial.println("Setting pixel to yellow, for early morning, or naptime");
-    pixels.setPixelColor(0, pixels.Color(150, 150, 0));
-    pixels.setBrightness(50);
-    pixels.show();
+  if ((hr==6 and mn>=45) or (hr>=7 and hr<19)) {
+    display.println(tstr);
+    display.display();
+    Serial.println(" Day");
   }
-  else*/
-  if ((hr==6 and mn>=30) or (hr==7) or (hr==14 and mn >=30)) {
+  else {
+    Serial.println(" Night");
+  }
+
+  if ((hr==6 and mn>=45) or (hr == 7)) {
     //Serial.println("Setting pixel to green, for day");
     pixels.setPixelColor(0, pixels.Color(0, 150, 0));
     pixels.setBrightness(10);
@@ -217,10 +242,10 @@ void loop () {
     pixels.show();
   }
 
-  if(!digitalRead(BUTTON_A)) increaseTime();
-  if(!digitalRead(BUTTON_B)) rotateDisplay();
-  if(!digitalRead(BUTTON_C)) decreaseTime();
-  delay(1000);
+  if (!digitalRead(BUTTON_A)) increaseTime();
+  if (!digitalRead(BUTTON_B)) rotateDisplay(tstr);
+  if (!digitalRead(BUTTON_C)) decreaseTime();
+  delay(3000);
   yield();
   display.display();
 }

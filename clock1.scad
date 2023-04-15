@@ -1,0 +1,22 @@
+difference(){
+    cube([38,32,62]);
+    translate([2,2,2]){
+        cube([34,28,63]);    
+    }
+    translate([-2,7,10]){
+        cube([5,18,53]);
+    } 
+}
+translate([50,0,0]){
+    difference(){
+        union(){
+            cube([34,28,2]);
+            translate([-2,5,0]){
+                cube([3,18,2]);
+            }
+        }
+        translate([13,7,-1]){
+            cube([8,14,5]);
+        }
+    }
+}
