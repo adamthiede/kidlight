@@ -144,11 +144,21 @@ void printRtcTime(DateTime now) {
 
 void increaseTime() {
   DateTime tm = rtc.now();
-  rtc.adjust(DateTime(tm.year(), tm.month(), tm.day(), tm.hour(), tm.minute() + 5, 0));
+  if (tm.minute() > 55) {
+    rtc.adjust(DateTime(tm.year(), tm.month(), tm.day(), tm.hour()+1, 0, 0));
+  }
+  else {
+    rtc.adjust(DateTime(tm.year(), tm.month(), tm.day(), tm.hour(), tm.minute() + 5, 0));
+  }
 }
 void decreaseTime() {
   DateTime tm = rtc.now();
-  rtc.adjust(DateTime(tm.year(), tm.month(), tm.day(), tm.hour(), tm.minute() - 5, 0));
+  if (tm.minute() < 5 ) {
+    rtc.adjust(DateTime(tm.year(), tm.month(), tm.day(), tm.hour()-1, 59, 0));
+  }
+  else {
+    rtc.adjust(DateTime(tm.year(), tm.month(), tm.day(), tm.hour(), tm.minute() - 5, 0));
+  }
 }
 void displaySetup() {
   DateTime now = rtc.now();
@@ -245,7 +255,7 @@ void loop () {
   if (!digitalRead(BUTTON_A)) increaseTime();
   if (!digitalRead(BUTTON_B)) rotateDisplay(tstr);
   if (!digitalRead(BUTTON_C)) decreaseTime();
-  delay(3000);
+  delay(1000);
   yield();
   display.display();
 }
